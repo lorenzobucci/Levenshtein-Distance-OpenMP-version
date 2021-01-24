@@ -7,8 +7,10 @@ using namespace std;
 
 int main() {
 
-    int stringLengthA = 32041;
-    int stringLengthB = 30137;
+    // GENERATING STRINGS
+
+    int stringLengthA = 61367;
+    int stringLengthB = 62789;
 
     string str("abcdefghijklmnopqrstuvwxyz");
 
@@ -22,21 +24,43 @@ int main() {
     for(auto& dis: b)
         dis = distribution(generator);
 
+    // SEQUENTIAL ALGORITHM
+
+    auto **ptr = new unsigned short *[stringLengthA + 1];
+    for (int i = 0; i <= stringLengthA; i++)
+        ptr[i] = new unsigned short[stringLengthB + 1];
+
+    cout << "Starting sequential algorithm..." << endl;
     auto startTime = chrono::high_resolution_clock::now();
-    unsigned short sequentialResult = sequentialAlgorithm(a, b);
+    unsigned short sequentialResult = sequentialAlgorithm(a, b, ptr);
     auto endTime = chrono::high_resolution_clock::now();
 
     chrono::duration<float> timeElapsed = endTime - startTime;
     cout << "Sequential edit distance result: " << sequentialResult << endl;
     cout << "Sequential execution time in s : " << timeElapsed.count() << endl;
 
+    for (int i = 0; i <= stringLengthA; i++)
+        delete ptr[i];
+    delete[] ptr;
 
-    for (unsigned short i = 10; i <= 1000; i+=100) {
+    // PARALLEL ALGORITHM
+
+    for (unsigned short subMatrixSize = 10; subMatrixSize <= 1000; subMatrixSize+=100) {
+        ptr = new unsigned short *[stringLengthA + 1];
+        for (int i = 0; i <= stringLengthA; i++)
+            ptr[i] = new unsigned short[stringLengthB + 1];
+
+        cout << endl << "Starting parallel algorithm..." << endl;
         startTime = chrono::high_resolution_clock::now();
-        unsigned short parallelResult = parallelAlgorithm(a, b, i);
+        unsigned short parallelResult = parallelAlgorithm(a, b, subMatrixSize, ptr);
         endTime = chrono::high_resolution_clock::now();
+
         timeElapsed = endTime - startTime;
-        cout << endl << "Parallel edit distance result: " << parallelResult << endl;
-        cout << "Parallel execution time in s: " << timeElapsed.count() << " with sub-matrices size: " << i << endl;
+        cout << "Parallel edit distance result: " << parallelResult << endl;
+        cout << "Parallel execution time in s: " << timeElapsed.count() << " with sub-matrices size: " << subMatrixSize << endl;
+
+        for (int i = 0; i <= stringLengthA; i++)
+            delete ptr[i];
+        delete[] ptr;
     }
 }
