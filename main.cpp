@@ -9,8 +9,8 @@ int main() {
 
     // GENERATING STRINGS
 
-    unsigned short stringLengthA = 44367;
-    unsigned short stringLengthB = 44789;
+    unsigned short stringLengthA = 32041;
+    unsigned short stringLengthB = 30137;
 
     string str("abcdefghijklmnopqrstuvwxyz");
 
